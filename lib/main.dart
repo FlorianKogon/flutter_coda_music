@@ -30,6 +30,20 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  
+  List<Song> listOfSongs = [
+    Song('Thème Swift', "Codabee", "images/un.jpg", "musics/un.mp3"),
+    Song('Thème Flutter', "Codabee", "images/deux.jpg", "musics.deux.mp3")
+  ];
+
+  Song myCurrentSong;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    myCurrentSong = listOfSongs[0];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,12 +58,17 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Image.asset(
-              "images/un.jpg",
-              width: MediaQuery.of(context).size.width / 1.2,
+            Card(
+              elevation: 9.0,
+              child: Container(
+                width: MediaQuery.of(context).size.height / 2.5,
+                child:  Image.asset(
+                  myCurrentSong.imagePath,
+                ),
+              ),
             ),
-            Text("song.title"),
-            Text("song.author"),
+            textWithStyle(myCurrentSong.title, 2.0),
+            textWithStyle(myCurrentSong.author, 1.6),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -76,8 +95,8 @@ class _MyHomePageState extends State<MyHomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text("durée totale"),
-                Text("durée restante")
+                textWithStyle("0:00", 0.8),
+                textWithStyle("1:00", 0.8),
               ],
             ),
           ],
@@ -85,4 +104,47 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+
+  Text textWithStyle(String string, double scale) {
+    return Text(
+      string,
+      textScaleFactor: scale,
+      style: TextStyle(
+        color: Colors.white,
+        fontSize: 20.0,
+        fontStyle: FontStyle.italic,
+      ),
+    );
+  }
+
+  IconButton iconButton(IconData icon, double size, ActionMusic action) {
+    return new IconButton(
+        icon: Icon(icon),
+        onPressed: () {
+          switch (action) {
+            case ActionMusic.play:
+              print("play");
+              break;
+            case ActionMusic.pause:
+              print("pause");
+              break;
+            case ActionMusic.rewind:
+              print("rewind");
+              break;
+            case ActionMusic.forward:
+              print("forward");
+              break;
+          }
+        }
+    );
+  }
+
+
+}
+
+enum ActionMusic {
+  play,
+  pause,
+  rewind,
+  forward,
 }
