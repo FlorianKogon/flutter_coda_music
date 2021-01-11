@@ -34,8 +34,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   
   List<Song> listOfSongs = [
-    Song('Thème Swift', "Codabee", "images/un.jpg", "musics/un.mp3"),
-    Song('Thème Flutter', "Codabee", "images/deux.jpg", "musics.deux.mp3")
+    Song('Thème Swift', "Codabee", "images/un.jpg", "https://codabee.com/wp-content/uploads/2018/06/un.mp3"),
+    Song('Thème Flutter', "Codabee", "images/deux.jpg", "https://codabee.com/wp-content/uploads/2018/06/deux.mp3")
   ];
 
   Song myCurrentSong;
@@ -82,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 iconButton(Icons.fast_rewind, 30.0, ActionMusic.rewind),
-                iconButton(Icons.play_arrow, 50.0, ActionMusic.play),
+                statut == PlayerState.playing ? iconButton(Icons.pause, 50.0, ActionMusic.pause) : iconButton(Icons.play_arrow, 50.0, ActionMusic.play),
                 iconButton(Icons.fast_forward, 30.0, ActionMusic.forward),
               ],
             ),
@@ -131,10 +131,11 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () {
           switch (action) {
             case ActionMusic.play:
-              print("play");
+              play();
+              print(myCurrentSong.urlSong);
               break;
             case ActionMusic.pause:
-              print("pause");
+              pause();
               break;
             case ActionMusic.rewind:
               print("rewind");
@@ -172,6 +173,20 @@ class _MyHomePageState extends State<MyHomePage> {
       });
       }
     );
+  }
+
+  Future play() async {
+    await audioPlayer.play(myCurrentSong.urlSong);
+    setState(() {
+      statut = PlayerState.playing;
+    });
+  }
+
+  Future pause() async {
+    await audioPlayer.pause();
+    setState(() {
+      statut = PlayerState.paused;
+    });
   }
 }
 
