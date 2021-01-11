@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'song.dart';
+import 'package:audioplayer/audioplayer.dart';
 
 void main() {
   runApp(MyApp());
@@ -87,7 +88,15 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Slider(
                 value: position,
-                onChanged: null
+                min: 0.0,
+                max: 30.0,
+                activeColor: Colors.red,
+                inactiveColor: Colors.white,
+                onChanged: (double d) {
+                  setState(() {
+                    position = d;
+                  });
+                },
             ),
           ],
         ),
