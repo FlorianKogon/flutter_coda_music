@@ -37,6 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
   ];
 
   Song myCurrentSong;
+  double position = 0.0;
 
   @override
   void initState() {
@@ -72,29 +73,6 @@ class _MyHomePageState extends State<MyHomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                FlatButton(
-                  onPressed: () => {
-                    print('précédent'),
-                  },
-                  child: Icon(Icons.fast_rewind, size: 30.0,),
-                ),
-                FlatButton(
-                  onPressed: () => {
-                    print('lecture'),
-                  },
-                  child: Icon(Icons.play_arrow, size: 50.0),
-                ),
-                FlatButton(
-                  onPressed: () => {
-                    print('suivant'),
-                  },
-                  child: Icon(Icons.fast_forward, size: 30.0),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
                 iconButton(Icons.fast_rewind, 30.0, ActionMusic.rewind),
                 iconButton(Icons.play_arrow, 50.0, ActionMusic.play),
                 iconButton(Icons.fast_forward, 30.0, ActionMusic.forward),
@@ -107,8 +85,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 textWithStyle("1:00", 0.8),
               ],
             ),
+            Slider(
+                value: position,
+                onChanged: null
+            ),
           ],
-        )  ,
+        ),
       ),
     );
   }
@@ -147,8 +129,6 @@ class _MyHomePageState extends State<MyHomePage> {
         }
     );
   }
-
-
 }
 
 enum ActionMusic {
