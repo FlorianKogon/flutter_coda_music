@@ -46,54 +46,52 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
-        backgroundColor: Colors.black87,
+        backgroundColor: Colors.grey[900],
         centerTitle: false,
       ),
+      backgroundColor: Colors.grey[800],
       body: Center(
-        child: Container(
-          color: Colors.grey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              Image.asset(
-                "images/un.jpg",
-                width: MediaQuery.of(context).size.width / 1.2,
-              ),
-              Text(song.title),
-              Text(song.author),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  FlatButton(
-                    onPressed: () => {
-                      print('précédent'),
-                    },
-                    child: Icon(Icons.fast_rewind, size: 30.0,),
-                  ),
-                  FlatButton(
-                    onPressed: () => {
-                      print('lecture'),
-                    },
-                    child: Icon(Icons.play_arrow, size: 50.0),
-                  ),
-                  FlatButton(
-                    onPressed: () => {
-                      print('suivant'),
-                    },
-                    child: Icon(Icons.fast_forward, size: 30.0),
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text("durée totale"),
-                  Text("durée restante")
-                ],
-              ),
-            ],
-          ),
-        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Image.asset(
+              "images/un.jpg",
+              width: MediaQuery.of(context).size.width / 1.2,
+            ),
+            Text("song.title"),
+            Text("song.author"),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                FlatButton(
+                  onPressed: () => {
+                    print('précédent'),
+                  },
+                  child: Icon(Icons.fast_rewind, size: 30.0,),
+                ),
+                FlatButton(
+                  onPressed: () => {
+                    print('lecture'),
+                  },
+                  child: Icon(Icons.play_arrow, size: 50.0),
+                ),
+                FlatButton(
+                  onPressed: () => {
+                    print('suivant'),
+                  },
+                  child: Icon(Icons.fast_forward, size: 30.0),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text("durée totale"),
+                Text("durée restante")
+              ],
+            ),
+          ],
+        )  ,
       ),
     );
   }
