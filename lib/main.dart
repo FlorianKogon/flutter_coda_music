@@ -1,18 +1,8 @@
 import 'package:flutter/material.dart';
+import 'song.dart';
 
 void main() {
   runApp(MyApp());
-}
-
-class Song {
-
-  String title;
-  String author;
-
-  Song(String title, String author) {
-    this.title = title;
-    this.author = author;
-  }
 }
 
 class MyApp extends StatelessWidget {
