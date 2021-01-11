@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'song.dart';
 import 'package:audioplayer/audioplayer.dart';
@@ -33,18 +34,24 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   
   List<Song> listOfSongs = [
-    Song('Thème Swift', "Codabee", "images/un.jpg", "musics/un.mp3"),
-    Song('Thème Flutter', "Codabee", "images/deux.jpg", "musics.deux.mp3")
+    Song('Thème Swift', "Codabee", "images/un.jpg", "https://codabee.com/wp-content/uploads/2018/06/un.mp3"),
+    Song('Thème Flutter', "Codabee", "images/deux.jpg", "https://codabee.com/wp-content/uploads/2018/06/deux.mp3")
   ];
 
   Song myCurrentSong;
-  double position = 0.0;
+  StreamSubscription positionSub;
+  StreamSubscription stateSub;
+  Duration position = Duration(seconds: 0);
+  Duration duration = Duration(seconds: 10);
+  AudioPlayer audioPlayer;
+  PlayerState statut = PlayerState.stopped;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     myCurrentSong = listOfSongs[0];
+    configurationAudioPlayer();
   }
 
   @override
@@ -75,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 iconButton(Icons.fast_rewind, 30.0, ActionMusic.rewind),
-                iconButton(Icons.play_arrow, 50.0, ActionMusic.play),
+                statut == PlayerState.playing ? iconButton(Icons.pause, 50.0, ActionMusic.pause) : iconButton(Icons.play_arrow, 50.0, ActionMusic.play),
                 iconButton(Icons.fast_forward, 30.0, ActionMusic.forward),
               ],
             ),
@@ -87,14 +94,15 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             ),
             Slider(
-                value: position,
+                value: position.inSeconds.toDouble(),
                 min: 0.0,
                 max: 30.0,
                 activeColor: Colors.red,
                 inactiveColor: Colors.white,
                 onChanged: (double d) {
                   setState(() {
-                    position = d;
+                    Duration newDuration = Duration(seconds: d.toInt());
+                    position = newDuration;
                   });
                 },
             ),
@@ -123,10 +131,11 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () {
           switch (action) {
             case ActionMusic.play:
-              print("play");
+              play();
+              print(myCurrentSong.urlSong);
               break;
             case ActionMusic.pause:
-              print("pause");
+              pause();
               break;
             case ActionMusic.rewind:
               print("rewind");
@@ -138,6 +147,47 @@ class _MyHomePageState extends State<MyHomePage> {
         }
     );
   }
+
+  void configurationAudioPlayer() {
+    audioPlayer = new AudioPlayer();
+    positionSub = audioPlayer.onAudioPositionChanged.listen(
+      (pos) => setState(() => position = pos)
+    );
+    stateSub = audioPlayer.onPlayerStateChanged.listen((state) {
+      if (state == AudioPlayerState.PLAYING) {
+        setState(() {
+          duration = audioPlayer.duration;
+        });
+      }
+      else if (state == AudioPlayerState.STOPPED) {
+        setState(() {
+          statut = PlayerState.stopped;
+        });
+      }
+    }, onError: (msg) {
+      print("erreur: $msg");
+      setState(() {
+        statut = PlayerState.stopped;
+        duration = Duration(seconds: 0);
+        position = Duration(seconds: 0);
+      });
+      }
+    );
+  }
+
+  Future play() async {
+    await audioPlayer.play(myCurrentSong.urlSong);
+    setState(() {
+      statut = PlayerState.playing;
+    });
+  }
+
+  Future pause() async {
+    await audioPlayer.pause();
+    setState(() {
+      statut = PlayerState.paused;
+    });
+  }
 }
 
 enum ActionMusic {
@@ -145,4 +195,10 @@ enum ActionMusic {
   pause,
   rewind,
   forward,
+}
+
+enum PlayerState {
+  playing,
+  stopped,
+  paused,
 }
