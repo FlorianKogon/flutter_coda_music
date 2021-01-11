@@ -39,6 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Song myCurrentSong;
   double position = 0.0;
+  AudioPlayer audioPlugin = AudioPlayer();
 
   @override
   void initState() {
@@ -124,9 +125,11 @@ class _MyHomePageState extends State<MyHomePage> {
           switch (action) {
             case ActionMusic.play:
               print("play");
+              audioPlugin.play(myCurrentSong.urlSong);
               break;
             case ActionMusic.pause:
               print("pause");
+              audioPlugin.pause();
               break;
             case ActionMusic.rewind:
               print("rewind");
