@@ -45,12 +45,13 @@ class _MyHomePageState extends State<MyHomePage> {
   Duration duration = Duration(seconds: 10);
   AudioPlayer audioPlayer;
   PlayerState statut = PlayerState.stopped;
+  int index = 0;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    myCurrentSong = listOfSongs[0];
+    myCurrentSong = listOfSongs[index];
     configurationAudioPlayer();
   }
 
@@ -89,20 +90,19 @@ class _MyHomePageState extends State<MyHomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                textWithStyle("0:00", 0.8),
-                textWithStyle("1:00", 0.8),
+                textWithStyle(fromDuration(position), 0.8),
+                textWithStyle(fromDuration(duration), 0.8),
               ],
             ),
             Slider(
                 value: position.inSeconds.toDouble(),
                 min: 0.0,
-                max: 30.0,
+                max: 22.0,
                 activeColor: Colors.red,
                 inactiveColor: Colors.white,
                 onChanged: (double d) {
                   setState(() {
-                    Duration newDuration = Duration(seconds: d.toInt());
-                    position = newDuration;
+                    audioPlayer.seek(d);
                   });
                 },
             ),
@@ -138,10 +138,10 @@ class _MyHomePageState extends State<MyHomePage> {
               pause();
               break;
             case ActionMusic.rewind:
-              print("rewind");
+              rewind();
               break;
             case ActionMusic.forward:
-              print("forward");
+              forward();
               break;
           }
         }
@@ -187,6 +187,36 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       statut = PlayerState.paused;
     });
+  }
+
+  void forward() {
+    if (index == listOfSongs.length - 1) {
+      index = 0;
+    } else {
+      index++;
+    }
+    myCurrentSong = listOfSongs[index];
+    configurationAudioPlayer();
+    play();
+  }
+
+  void rewind() {
+    if (position > Duration(seconds: 3)) {
+      audioPlayer.seek(0.0);
+    } else {
+      if (index == 0) {
+        index = listOfSongs.length - 1;
+      } else {
+        index--;
+      }
+    }
+    myCurrentSong = listOfSongs[index];
+    configurationAudioPlayer();
+    play();
+  }
+
+  String fromDuration(Duration durationOfSong) {
+    return durationOfSong.toString().split('.').first;
   }
 }
 
