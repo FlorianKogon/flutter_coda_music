@@ -93,6 +93,14 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                iconButton(Icons.fast_rewind, 30.0, ActionMusic.rewind),
+                iconButton(Icons.play_arrow, 50.0, ActionMusic.play),
+                iconButton(Icons.fast_forward, 30.0, ActionMusic.forward),
+              ],
+            ),
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 textWithStyle("0:00", 0.8),
@@ -120,6 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
   IconButton iconButton(IconData icon, double size, ActionMusic action) {
     return new IconButton(
         icon: Icon(icon),
+        iconSize: size,
         onPressed: () {
           switch (action) {
             case ActionMusic.play:
