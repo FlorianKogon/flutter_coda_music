@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'song.dart';
 import 'package:audioplayer/audioplayer.dart';
@@ -38,14 +39,19 @@ class _MyHomePageState extends State<MyHomePage> {
   ];
 
   Song myCurrentSong;
-  double position = 0.0;
-  AudioPlayer audioPlugin = AudioPlayer();
+  StreamSubscription positionSub;
+  StreamSubscription stateSub;
+  Duration position = Duration(seconds: 0);
+  Duration duration = Duration(seconds: 10);
+  AudioPlayer audioPlayer;
+  PlayerState statut = PlayerState.stopped;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     myCurrentSong = listOfSongs[0];
+    configurationAudioPlayer();
   }
 
   @override
@@ -88,14 +94,15 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             ),
             Slider(
-                value: position,
+                value: position.inSeconds.toDouble(),
                 min: 0.0,
                 max: 30.0,
                 activeColor: Colors.red,
                 inactiveColor: Colors.white,
                 onChanged: (double d) {
                   setState(() {
-                    position = d;
+                    Duration newDuration = Duration(seconds: d.toInt());
+                    position = newDuration;
                   });
                 },
             ),
@@ -125,11 +132,9 @@ class _MyHomePageState extends State<MyHomePage> {
           switch (action) {
             case ActionMusic.play:
               print("play");
-              audioPlugin.play(myCurrentSong.urlSong);
               break;
             case ActionMusic.pause:
               print("pause");
-              audioPlugin.pause();
               break;
             case ActionMusic.rewind:
               print("rewind");
@@ -141,6 +146,33 @@ class _MyHomePageState extends State<MyHomePage> {
         }
     );
   }
+
+  void configurationAudioPlayer() {
+    audioPlayer = new AudioPlayer();
+    positionSub = audioPlayer.onAudioPositionChanged.listen(
+      (pos) => setState(() => position = pos)
+    );
+    stateSub = audioPlayer.onPlayerStateChanged.listen((state) {
+      if (state == AudioPlayerState.PLAYING) {
+        setState(() {
+          duration = audioPlayer.duration;
+        });
+      }
+      else if (state == AudioPlayerState.STOPPED) {
+        setState(() {
+          statut = PlayerState.stopped;
+        });
+      }
+    }, onError: (msg) {
+      print("erreur: $msg");
+      setState(() {
+        statut = PlayerState.stopped;
+        duration = Duration(seconds: 0);
+        position = Duration(seconds: 0);
+      });
+      }
+    );
+  }
 }
 
 enum ActionMusic {
@@ -148,4 +180,10 @@ enum ActionMusic {
   pause,
   rewind,
   forward,
+}
+
+enum PlayerState {
+  playing,
+  stopped,
+  paused,
 }
